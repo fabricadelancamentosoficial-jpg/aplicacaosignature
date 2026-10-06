@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicação Signature · Fábrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f6f6f3;--card:#fff;--ac:#2c6f9e;--ac-l:#eaf2f8;--ac-m:#6fa3c8;
+  --txt:#16181b;--txt-m:#555b63;--txt-l:#959ba3;--border:rgba(0,0,0,.08);--border-s:rgba(0,0,0,.14);
+  --err:#b4432f;--err-l:#fbefec;
+}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+.hdr{padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);background:var(--card);}
+.logo{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--txt);}
+.logo span{color:var(--ac);}
+.prog-wrap{display:flex;align-items:center;gap:12px;}
+.prog-bar{width:200px;height:2px;background:rgba(0,0,0,.06);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .5s;}
+.prog-lbl{font-size:11px;color:var(--txt-l);letter-spacing:.05em;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.card,.intro-card,.fim-card{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:680px;}
+.card{padding:56px 64px;}
+.intro-card,.fim-card{padding:64px;text-align:center;}
+.bloco-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:28px;}
+.bloco-dot{width:6px;height:6px;border-radius:50%;background:var(--ac-m);}
+.q-num{font-size:11px;color:var(--txt-l);letter-spacing:.08em;margin-bottom:10px;}
+.q-txt{font-size:26px;font-weight:300;line-height:1.4;margin-bottom:8px;letter-spacing:-.02em;}
+.q-hint{font-size:13px;color:var(--txt-l);font-style:italic;margin-bottom:36px;line-height:1.6;}
+textarea,input{width:100%;font-family:inherit;font-size:16px;color:var(--txt);background:var(--bg);border:1px solid var(--border-s);border-radius:10px;padding:16px 20px;resize:none;outline:none;transition:border-color .2s;line-height:1.6;}
+textarea:focus,input:focus{border-color:var(--ac-m);}
+textarea{min-height:150px;}
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+.opts.g2{display:grid;grid-template-columns:1fr 1fr;}
+.opt{padding:15px 18px;border:1px solid var(--border-s);border-radius:10px;background:var(--bg);font-family:inherit;font-size:14px;color:var(--txt-m);cursor:pointer;text-align:left;line-height:1.45;transition:all .15s;display:flex;align-items:center;gap:12px;}
+.opt::before{content:"";width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-s);flex-shrink:0;transition:all .15s;}
+.opt:hover{border-color:var(--ac-m);color:var(--ac);}
+.opt.sel{border-color:var(--ac);background:var(--ac-l);color:var(--ac);font-weight:500;}
+.opt.sel::before{border-color:var(--ac);background:var(--ac);box-shadow:inset 0 0 0 3px var(--ac-l);}
+.opt:focus-visible,.btn-nx:focus-visible,.btn-bk:focus-visible{outline:2px solid var(--ac-m);outline-offset:2px;}
+.outro{margin-top:12px;}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:40px;gap:12px;}
+.btn-bk{font-size:13px;color:var(--txt-l);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+.btn-bk:hover{color:var(--txt);}
+.btn-nx{font-size:14px;font-weight:500;color:#fff;background:var(--ac);border:none;border-radius:10px;padding:14px 32px;cursor:pointer;font-family:inherit;transition:opacity .2s;}
+.btn-nx:hover{opacity:.9;}
+.btn-nx:disabled{opacity:.35;cursor:not-allowed;}
+.enter-hint{font-size:11px;color:var(--txt-l);margin-top:10px;}
+.intro-ey{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin-bottom:24px;}
+.intro-t{font-size:34px;font-weight:300;letter-spacing:-.03em;line-height:1.2;margin-bottom:20px;}
+.intro-t strong{font-weight:500;}
+.intro-d{font-size:15px;color:var(--txt-m);line-height:1.7;margin:0 auto 32px;max-width:460px;}
+.mapa{background:var(--ac-l);border-radius:12px;padding:22px 24px;text-align:left;margin:0 auto 32px;max-width:480px;}
+.mapa-t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);font-weight:600;margin-bottom:10px;}
+.mapa p{font-size:14px;color:var(--txt);line-height:1.65;}
+.mapa ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.mapa li{font-size:13.5px;color:var(--txt-m);padding-left:18px;position:relative;line-height:1.55;}
+.mapa li::before{content:"→";position:absolute;left:0;color:var(--ac);}
+.small{font-size:12px;color:var(--txt-l);margin-bottom:32px;line-height:1.6;}
+.fim-icon{width:56px;height:56px;border-radius:50%;background:var(--ac-l);color:var(--ac);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:22px;}
+.fim-t{font-size:28px;font-weight:300;letter-spacing:-.02em;margin-bottom:16px;}
+.fim-d{font-size:14.5px;color:var(--txt-m);line-height:1.7;max-width:420px;margin:0 auto;}
+.err{margin-top:20px;padding:14px 18px;border-radius:10px;background:var(--err-l);color:var(--err);font-size:13px;line-height:1.6;}
+.overlay{position:fixed;inset:0;background:rgba(246,246,243,.92);display:none;align-items:center;justify-content:center;z-index:100;font-size:14px;color:var(--txt-m);letter-spacing:.04em;}
+.hp{position:absolute;left:-9999px;opacity:0;}
+@media(max-width:600px){
+  .card,.intro-card,.fim-card{padding:36px 22px;}
+  .q-txt{font-size:21px;}
+  .intro-t{font-size:27px;}
+  .opts.g2{grid-template-columns:1fr;}
+  .prog-bar{width:100px;}
+  .hdr{padding:16px 20px;}
+  .main{padding:24px 16px;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay">Enviando sua aplicação...</div>
+<div class="hdr">
+  <div class="logo">fábrica<span>.</span></div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
+    <div class="prog-lbl" id="plbl">0 / 8</div>
+  </div>
+</div>
+<div class="main"><div id="screen"></div></div>
+<input class="hp" type="text" id="honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+<script>
+/* ===== Para onde vão as respostas ===== */
+var EMAIL_DESTINO = 'fabricadelancamentosoficial@gmail.com';
+var ENDPOINT = 'https://formsubmit.co/ajax/' + EMAIL_DESTINO;
+
+var BLOCOS = {sobre:'Sobre você', momento:'Seu momento', negocio:'Seu negócio'};
+
+var PP = [
+  {b:'sobre', t:'tx', txt:'Qual é o seu nome?', ph:'Nome e sobrenome', c:'nome', lbl:'Nome'},
+  {b:'sobre', t:'tel', txt:'Qual é o seu WhatsApp?', hint:'É por aqui que nosso time vai falar com você.', ph:'(00) 00000-0000', c:'whatsapp', lbl:'WhatsApp'},
+  {b:'sobre', t:'ig', txt:'Qual é o seu Instagram?', hint:'Vamos olhar seu perfil antes da conversa, para chegar nela já entendendo seu contexto.', ph:'@usuario', c:'instagram', lbl:'Instagram'},
+  {b:'sobre', t:'op', txt:'Qual dessas opções melhor descreve você hoje?', ops:['Médico(a)','Dentista','Dono(a) de clínica','Profissional da saúde','Outro'], g2:true, outro:'Outro', c:'perfil', lbl:'Perfil'},
+  {b:'momento', t:'op', txt:'Quando você pensa no seu Instagram hoje, qual dessas situações mais representa o seu momento?', ops:[
+    'Tenho dificuldade até para saber o que postar.',
+    'Produzo conteúdo, mas sinto que ele não representa o profissional que sou.',
+    'Tenho audiência e visualizações, mas isso gera poucas oportunidades.',
+    'Meu conteúdo até funciona, mas falta estratégia e consistência.',
+    'Já tenho uma presença forte e quero transformar isso em mais crescimento para o negócio.'
+  ], c:'momento_instagram', lbl:'Momento no Instagram'},
+  {b:'momento', t:'ta', txt:'Se a sua comunicação começasse a funcionar como você gostaria nos próximos 6 meses, o que precisaria acontecer para você considerar isso um sucesso?', hint:'Escreva do seu jeito. Não existe resposta certa.', c:'sucesso_6_meses', lbl:'Sucesso em 6 meses'},
+  {b:'negocio', t:'op', txt:'Hoje, qual é aproximadamente o faturamento mensal do seu negócio?', hint:'Usamos isso só para entender o estágio do negócio. Fica entre nós.', ops:['Até R$ 20 mil','R$ 20 mil a R$ 50 mil','R$ 50 mil a R$ 100 mil','R$ 100 mil a R$ 300 mil','Acima de R$ 300 mil'], c:'faturamento', lbl:'Faturamento mensal'},
+  {b:'negocio', t:'op', txt:'Se entendermos que o Signature faz sentido para o seu momento, você está disposto(a) a investir na construção dessa estratégia?', ops:['Sim, estou buscando uma solução agora.','Sim, dependendo da proposta.','Ainda estou entendendo minhas opções.','Não pretendo investir neste momento.'], c:'intencao_investimento', lbl:'Intenção de investimento'}
+];
+
+var TOTAL = PP.length;
+var step = -1;
+var R = {};
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function $(id){ return document.getElementById(id); }
+
+function render(){
+  if(step===-1) showIntro();
+  else if(step<TOTAL) showQ(step);
+  else showFim();
+  var pct = step<=0 ? 0 : Math.min(step/TOTAL*100,100);
+  $('pfill').style.width = pct+'%';
+  $('plbl').textContent = Math.min(Math.max(step,0),TOTAL)+' / '+TOTAL;
+}
+
+function showIntro(){
+  $('screen').innerHTML='<div class="intro-card">'+
+    '<div class="intro-ey">Aplicação · Signature</div>'+
+    '<h1 class="intro-t">Antes de conversarmos,<br><strong>queremos entender seu momento.</strong></h1>'+
+    '<p class="intro-d">O Signature transforma a sua maneira de pensar em conteúdos que geram demanda e fazem o negócio crescer. Para saber se faz sentido para você, começamos por aqui.</p>'+
+    '<div class="mapa"><div class="mapa-t">O que você recebe</div>'+
+      '<p>Se houver aderência, você é convidado(a) para uma <strong>Reunião de Mapa</strong> com o nosso time.</p>'+
+      '<ul><li>um diagnóstico de como sua comunicação está hoje</li><li>o mapa do que ela precisa ter para gerar demanda</li><li>os próximos passos, em ordem de prioridade</li></ul>'+
+      '<p style="margin-top:12px;color:var(--txt-m);font-size:13.5px">O mapa é seu, independente de você seguir com a Fábrica depois.</p>'+
+    '</div>'+
+    '<p class="small">São 8 perguntas, leva uns 3 minutos.</p>'+
+    '<button class="btn-nx" id="start">Começar aplicação →</button>'+
+  '</div>';
+  $('start').onclick=function(){ step=0; render(); };
+}
+
+function showQ(i){
+  var p=PP[i], inp='';
+  if(p.t==='tx'||p.t==='tel'||p.t==='ig'){
+    var type = p.t==='tel' ? 'tel' : 'text';
+    var extra = p.t==='tel' ? ' inputmode="tel" autocomplete="tel"' : (p.t==='ig' ? ' autocapitalize="off" autocorrect="off" spellcheck="false"' : ' autocomplete="name"');
+    inp='<input id="ifield" type="'+type+'"'+extra+' placeholder="'+esc(p.ph)+'" value="'+esc(R[p.c]||'')+'">'+
+        '<div class="enter-hint">Pressione Enter para continuar</div>';
+  } else if(p.t==='ta'){
+    inp='<textarea id="ifield" placeholder="Escreva aqui...">'+esc(R[p.c]||'')+'</textarea>';
+  } else if(p.t==='op'){
+    inp='<div class="opts'+(p.g2?' g2':'')+'">'+p.ops.map(function(o,k){
+      return '<button type="button" class="opt'+(R[p.c]===o?' sel':'')+'" data-k="'+k+'">'+esc(o)+'</button>';
+    }).join('')+'</div>';
+    if(p.outro && R[p.c]===p.outro){
+      inp+='<input id="outroField" class="outro" type="text" placeholder="Qual é a sua área?" value="'+esc(R[p.c+'_outro']||'')+'">';
+    }
+  }
+  var hint = p.hint ? '<div class="q-hint">'+esc(p.hint)+'</div>' : '<div style="margin-bottom:36px"></div>';
+  $('screen').innerHTML='<div class="card">'+
+    '<div class="bloco-tag"><span class="bloco-dot"></span>'+esc(BLOCOS[p.b])+'</div>'+
+    '<div class="q-num">Pergunta '+(i+1)+' de '+TOTAL+'</div>'+
+    '<h2 class="q-txt">'+esc(p.txt)+'</h2>'+hint+inp+
+    '<div id="errBox"></div>'+
+    '<div class="nav">'+
+      (i>0?'<button type="button" class="btn-bk" id="bk">← Voltar</button>':'<span></span>')+
+      '<button type="button" class="btn-nx" id="nx">'+(i===TOTAL-1?'Enviar aplicação →':'Próximo →')+'</button>'+
+    '</div></div>';
+
+  var f=$('ifield');
+  if(f){
+    f.oninput=function(){
+      if(p.t==='tel') f.value=maskTel(f.value);
+      if(p.t==='ig') f.value=f.value.replace(/\s/g,'');
+      R[p.c]=f.value; chk();
+    };
+    if(f.tagName==='INPUT') f.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); if(ok(p)) avancar(); } };
+    setTimeout(function(){ f.focus(); },60);
+  }
+  document.querySelectorAll('.opt').forEach(function(b){
+    b.onclick=function(){ R[p.c]=p.ops[+b.dataset.k]; render(); var o=$('outroField'); if(o) o.focus(); };
+  });
+  var of=$('outroField');
+  if(of){
+    of.oninput=function(){ R[p.c+'_outro']=of.value; chk(); };
+    of.onkeydown=function(e){ if(e.key==='Enter'&&ok(p)) avancar(); };
+  }
+  if($('bk')) $('bk').onclick=function(){ step--; render(); };
+  $('nx').onclick=avancar;
+  chk();
+}
+
+function maskTel(v){
+  var d=v.replace(/\D/g,'').slice(0,13);
+  if(d.length>11 && d.indexOf('55')===0) d=d.slice(2);
+  d=d.slice(0,11);
+  if(d.length<=2) return d.length?'('+d:'';
+  if(d.length<=6) return '('+d.slice(0,2)+') '+d.slice(2);
+  if(d.length<=10) return '('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6);
+  return '('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7);
+}
+function maskIg(v){
+  v=(v||'').trim().replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i,'').replace(/[\/?].*$/,'').replace(/\s/g,'');
+  if(!v) return '';
+  return '@'+v.replace(/^@+/,'');
+}
+
+function ok(p){
+  var v=R[p.c];
+  if(p.t==='tx') return !!v && v.trim().length>1;
+  if(p.t==='tel') return !!v && v.replace(/\D/g,'').length>=10;
+  if(p.t==='ig') return maskIg(v).replace('@','').length>=2;
+  if(p.t==='ta') return !!v && v.trim().length>2;
+  if(p.t==='op'){
+    if(!v) return false;
+    if(p.outro && v===p.outro) return !!R[p.c+'_outro'] && R[p.c+'_outro'].trim().length>1;
+    return true;
+  }
+  return false;
+}
+function chk(){ var b=$('nx'); if(b) b.disabled=!ok(PP[step]); }
+
+function avancar(){
+  if(!ok(PP[step])) return;
+  if(PP[step].t==='ig') R[PP[step].c]=maskIg(R[PP[step].c]);
+  if(step===TOTAL-1){ enviar(); return; }
+  step++; render(); window.scrollTo(0,0);
+}
+
+function enviar(){
+  if($('honey').value) { step=TOTAL; render(); return; }
+  $('overlay').style.display='flex';
+  var nome=(R.nome||'').trim();
+  var payload={
+    _subject:'Aplicação Signature: '+nome,
+    _template:'table',
+    _captcha:'false'
+  };
+  PP.forEach(function(p){
+    var v=R[p.c]||'';
+    if(p.outro && v===p.outro) v='Outro: '+(R[p.c+'_outro']||'').trim();
+    payload[(PP.indexOf(p)+1)+'. '+p.lbl]=v;
+  });
+  payload['Instagram (link)']='https://instagram.com/'+(R.instagram||'').replace('@','');
+  payload['WhatsApp (link)']='https://wa.me/55'+(R.whatsapp||'').replace(/\D/g,'');
+  payload['Enviado em']=new Date().toLocaleString('pt-BR');
+
+  fetch(ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(payload)
+  }).then(function(res){
+    return res.json().catch(function(){ return {}; }).then(function(j){
+      if(!res.ok || j.success===false || j.success==='false') throw new Error(j.message||('status '+res.status));
+    });
+  }).then(function(){
+    $('overlay').style.display='none';
+    step=TOTAL; render(); window.scrollTo(0,0);
+  }).catch(function(){
+    $('overlay').style.display='none';
+    $('errBox').innerHTML='<div class="err">Não conseguimos enviar sua aplicação agora. Verifique sua internet e toque em enviar de novo. Suas respostas continuam salvas nesta tela.</div>';
+    var b=$('nx'); if(b){ b.textContent='Tentar enviar de novo →'; b.disabled=false; }
+  });
+}
+
+function showFim(){
+  $('screen').innerHTML='<div class="fim-card">'+
+    '<div class="fim-icon">✓</div>'+
+    '<div class="fim-t">Aplicação recebida.</div>'+
+    '<p class="fim-d">Vamos analisar suas respostas e seu perfil. Se entendermos que existe aderência com o Signature, nosso time vai entrar em contato pelo WhatsApp para marcar sua Reunião de Mapa.</p>'+
+  '</div>';
+}
+
+render();
+</script>
+</body>
+</html>
